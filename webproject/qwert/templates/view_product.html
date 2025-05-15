@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ product.name }}</h1>
+        {% include 'navbar.html' %}
+
+        <div class="row">
+            <div class="col-md-6">
+                 {% if product.image_path %}
+                    <img src="{{ url_for('static', filename=product.image_path) }}" alt="{{ product.name }}" class="img-fluid">
+                {% else %}
+                    <img src="https://via.placeholder.com/300" alt="No Image" class="img-fluid">
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <p><strong>Description:</strong> {{ product.description }}</p>
+                <p><strong>Price:</strong> ${{ product.price }}</p>
+                <p><strong>Stock:</strong> {{ product.stock }}</p>
+                <p><strong>Category:</strong> {{ product.category.name }}</p>
+                <p><strong>Added by:</strong> {{ product.user.username }}</p>
+
+                {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                        <div class="form-group">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                    </form>
+                {% else %}
+                    <p>Please <a href="{{ url_for('login') }}">log in</a> to add to cart.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
